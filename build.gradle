@@ -1,0 +1,102 @@
+apply from: this.file('config.gradle')
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()
+        jcenter()
+//        repositoryHandler.mavenCentral()
+//        repositoryHandler.mavenLocal()//本地Maven库
+//        //私有Maven地址 可配置多个
+//        repositoryHandler.maven {
+//            name 'csco'
+//            url 'http://xxxxx'
+//            credentials {
+//                username = 'xx'
+//                password = 'xx'
+//            }
+//        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.1.2"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+//初始化阶段和配置阶段之间执行的监听
+this.beforeEvaluate {}
+
+//配置阶段和执行阶段之间执行的监听
+this.afterEvaluate {
+    println "listener between config and execute"
+}
+//gradle生命周期执行完成以后的监听
+this.gradle.buildFinished {
+    println "listener after execute"
+}
+
+
+this.gradle.beforeProject {}
+
+this.gradle.afterProject {}
+
+//this.getProjects()
+//def getProjects() {
+//    println '-------------------------'
+//    println 'Root Project'
+//    println '-------------------------'
+//    this.getAllprojects().eachWithIndex { Project project, int index ->
+//        if (index == 0) {
+//            //Root Project
+//            println "Root Project:  '${project.name}' "
+//        } else {
+//            println "+--- project : '${project.name}'"
+//        }
+//    }
+//}
+
+//project("app") {
+//    apply { plugin("com.android.application") }
+//    group "com.hagan"
+//    version "1.0.0"
+//    dependencies {}
+//    android {}
+//}
+//allprojects {
+//
+//}
+
+//allprojects{
+//    ext {
+//        mCompileSdkVersion = 30
+//    }
+//}
+//
+//ext {
+//    mCompileSdkVersion = 30
+//}
+
+//println "The root file path is " + getRootDir().absolutePath
+//println "The build file path is " + getBuildDir().absolutePath
+//println "The project file path is " + getProjectDir().absolutePath
+//println getContent("config.gradle")
+//def getContent(String path) {
+//    try {
+//        def file = file(path)
+//        return file.text
+//    } catch (GradleException e) {
+//        e.printStackTrace()
+//    }
+//    return null
+//}

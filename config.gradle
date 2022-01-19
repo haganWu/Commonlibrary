@@ -1,0 +1,23 @@
+ext {
+    android = [
+            compileSdkVersion   : 30,
+            buildToolsVersion   : "30.0.3",
+            applicationId       : "com.hagan.commonlibrary",
+            minSdkVersion       : 22,
+            targetSdkVersion    : 30,
+            versionCode         : 210,
+            versionName         : "2.1.0",
+            manifestPlaceholders: [UMENG_CHANNEL_VALUE: 'hagan']
+    ]
+
+    signConfigs = [
+            'storeFile'    : 'xxx.jks',
+            'storePassword': '123456',
+            'keyAlias'     : 'android',
+            'keyPassword'  : '123456'
+    ]
+
+    java = [
+            'javaVersion': JavaVersion.VERSION_1_8
+    ]
+}

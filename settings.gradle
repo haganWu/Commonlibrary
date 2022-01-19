@@ -1,0 +1,7 @@
+include ':lib_base'
+include ':app'
+rootProject.name = "Commonlibrary"
+
+if (hasProperty('isLoadTest') ? isLoadTest.toBoolean() : false) {
+    //...
+}

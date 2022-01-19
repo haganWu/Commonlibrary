@@ -1,0 +1,304 @@
+apply plugin: 'com.android.application'
+//apply from: this.rootProject.file('releaseinfo.gradle')
+apply plugin: 'com.hagan.gradle.plugin'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.hagan.commonlibrary"
+        minSdkVersion 22
+        targetSdkVersion 30
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = ['src/main/res', 'src/main/res-ad', 'src/main/res-player']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(includes: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+//    implementation project(':lib_base')
+//    implementation('com.github.chrisbanes:PhotoView:1.3.0') {
+//        exclude module: 'support-v4'//排除依赖
+////        exclude group: 'com.android.support'//排除指定包下所有的库
+//        transitive false //禁止传递依赖
+//    }
+}
+
+
+//copy {
+//    from file("build/outputs/apk/release/")
+//    into getRootProject().getBuildDir()
+//    exclude {}//排除
+//    rename {}//重命名
+//}
+
+//对文件树进行遍历
+//fileTree("build/outputs/apk/") { FileTree fileTree ->
+//    fileTree.visit { FileTreeElement element ->
+//        println 'The file name is ' + element.name
+//    }
+//}
+
+
+//task(name: 'apkcopy') {
+//    //doLast任务在gradle的执行阶段去执行
+//    doLast {
+//        def sourcePath = this.buildDir.path + 'outputs/apk'
+//        def toPath = 'D:\\temp'
+//        def command = "mv -f ${sourcePath} ${toPath}"
+//        //执行外部命令
+//        exec {
+//            try {
+//                //定义命令执行类型
+//                executable 'bash'
+//                args '-c', command
+//                println 'the command is execute success'
+//            } catch (GradleException e) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+//}
+
+
+//直接通过task函数创建
+//task helloTask(group: '组名', description: '描述') {
+//    println 'helloTask exec'
+//    doFirst {
+//        println 'helloTask 执行阶段,group' + group
+//    }
+//}
+//helloTask.doFirst {
+//    println 'helloTask 执行阶段,description' + description
+//}
+
+////通过project的tasks容器
+//this.tasks.create("helloTask2") {
+//    setGroup('csco')
+//    setDescription("描述")
+//    println 'helloTask exec2222'
+//}
+
+
+////计算build执行的时长
+//long startBuildTime, endBuildTime
+////afterEvaluate：配置完成后执行开始的方法回调 保证要找的task已配置完毕
+//this.afterEvaluate {
+//    //找到最先执行的task
+//    def preBuildTask = tasks.getByName('preBuild')
+//    preBuildTask.doFirst {
+//        startBuildTime = System.currentTimeMillis()
+//        println('The start time is :' + startBuildTime)
+//    }
+//    def buildTask = tasks.getByName('build')
+//    buildTask.doLast {
+//        endBuildTime = System.currentTimeMillis()
+//        println('The end time is :' + endBuildTime)
+//        long time = (endBuildTime - startBuildTime) / 1000
+//        println('Total build  time is  ' + time + ' 秒')
+//    }
+//
+//}
+
+/**
+ Task依赖
+ */
+//======================== 通过dependsOn =================
+////静态指定  定义几个Task
+//task taskX {
+//    doLast {
+//        println 'taskX -- doLast'
+//    }
+//}
+//task taskY {
+//    doLast {
+//        println 'taskY -- doLast'
+//    }
+//}
+//指定taskZ依赖taskX和taskY
+//task taskZ(dependsOn: [taskX, taskY]) {
+//    doLast {
+//        println 'taskZ -- doLast'
+//    }
+//}
+//或
+//taskZ.dependsOn(taskX, taskY)
+
+
+////动态指定
+//task lib1 {
+//    doLast {
+//        println '---------- lib1 ---------- '
+//    }
+//
+//}
+//
+//task lib2 {
+//    doLast {
+//        println '---------- lib2 ---------- '
+//    }
+//}
+//
+//task noLib {
+//    doLast {
+//        println '---------- noLib ---------- '
+//    }
+//}
+//
+////taskZ 依赖所有"lib"开头的task 通过运行结果为taskZ指定依赖
+//task taskZ(dependsOn: [taskX, taskY]) {
+//    dependsOn(this.tasks.findAll {
+//        return it.name.startsWith('lib')
+//    })
+//    doLast {
+//        println 'taskZ -- doLast'
+//    }
+//}
+
+
+//======================== 通过输入输出 =================
+
+//ext {
+//    versionName = "1.1.2"
+//    versionCode = "112"
+//    versionInfo = "第1个版本，xxxxxxxxxxxxx。。。"
+//    destFile = file("release.xml")
+//    if (destFile != null && !destFile.exists()) {
+//        destFile.createNewFile()
+//    }
+//}
+//task writeTask {
+//    //为task指定输入
+//    inputs.property("versionName", this.versionName)
+//    inputs.property("versionCode", this.versionCode)
+//    inputs.property("versionInfo", this.versionInfo)
+//    //为task指定输出
+//    outputs.file(this.destFile)
+//
+//    //执行阶段
+//    doLast {
+//        def data = inputs.getProperties()
+//        File file = outputs.getFiles().getSingleFile()
+//        //将data转成实体对象
+//        def versionMsg = new VersionMessage(data)
+//        //将实体对象转成xml
+//        def sw = new StringWriter()
+//        def xmlBuilder = new MarkupBuilder(sw)
+//        if (file.text != null && file.text.size() <= 0) {
+//            //文件中没有内容
+//            xmlBuilder.releases {
+//                release {
+//                    versionName(versionMsg.versionName)
+//                    versionCode(versionMsg.versionCode)
+//                    versionInfo(versionMsg.versionInfo)
+//                }
+//            }
+//            file.withWriter {
+//                it.append(sw.toString())
+//            }
+//        } else {
+//            //文件中已经有内容
+//            xmlBuilder.release {
+//                versionName(versionMsg.versionName)
+//                versionCode(versionMsg.versionCode)
+//                versionInfo(versionMsg.versionInfo)
+//            }
+//            def lines = file.readLines()
+//            def lengths = lines.size() - 1
+//            file.withWriter {
+//                lines.eachWithIndex { String line, int index ->
+//                    if (index != lengths) {
+//                        it.append(line + '\r\n')
+//                    } else if (index == lengths) {
+//                        it.append('\r\n' + sw.toString() + '\r\n')
+//                        it.append(lines.get(lengths))
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//task readTask {
+//    inputs.file(this.destFile)
+//    doLast {
+//        def file = inputs.files.singleFile
+//        println file.text
+//    }
+//}
+//
+//task taskTest {
+//    dependsOn(readTask, writeTask)
+//    doLast {
+//        println('输入输出任务结束')
+//    }
+//}
+//
+//class VersionMessage {
+//    String versionName
+//    String versionCode
+//    String versionInfo
+//}
+
+/**
+ * Task顺序指定
+ */
+
+//task taskX {
+//    doLast {
+//        println 'taskX --------------'
+//    }
+//}
+//task taskY {
+//    mustRunAfter(taskX)
+////    shouldRunAfter(taskX)
+//    doLast {
+//        println 'taskY --------------'
+//    }
+//}
+//task taskZ {
+//    mustRunAfter(taskY)
+//    doLast {
+//        println 'taskZ --------------'
+//    }
+//}
+
+//为自定义插件传递参数
+haganReleaseInfo {
+    versionName = rootProject.ext.android.versionName
+    versionCode = rootProject.ext.android.versionCode
+    versionInfo = 'App的第6个版本，上线了一些最基础核心的功能.'
+    fileName = 'releases.xml'
+}
+
+
+
+
+
